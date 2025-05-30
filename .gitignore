@@ -1,0 +1,9 @@
+# dependências
+node_modules/
+
+# lockfile
+package-lock.json
+
+# variáveis de ambiente
+.env
+.env.local
