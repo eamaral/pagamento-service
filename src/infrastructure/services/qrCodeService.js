@@ -5,6 +5,8 @@ const mp = new mercadopago.MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN
 });
 
+const preferenceClient = new mercadopago.Preference(mp); // 👈 instância da nova classe Preference
+
 async function gerarQrCode(pedido) {
   try {
     const preference = {
@@ -15,15 +17,15 @@ async function gerarQrCode(pedido) {
         unit_price: pedido.total
       }],
       back_urls: {
-        success: process.env.MERCADOPAGO_NOTIFICATION_URL || 'http://localhost:5001',
-        failure: process.env.MERCADOPAGO_NOTIFICATION_URL || 'http://localhost:5001',
-        pending: process.env.MERCADOPAGO_NOTIFICATION_URL || 'http://localhost:5001'
+        success: process.env.MERCADOPAGO_SUCCESS_URL || 'http://localhost:5001/success',
+        failure: process.env.MERCADOPAGO_FAILURE_URL || 'http://localhost:5001/failure',
+        pending: process.env.MERCADOPAGO_PENDING_URL || 'http://localhost:5001/pending'
       },
       auto_return: 'approved',
       notification_url: process.env.MERCADOPAGO_NOTIFICATION_URL
     };
 
-    const response = await mp.preference.create({ body: preference });
+    const response = await preferenceClient.create({ body: preference }); // ✅
 
     return {
       qrCodeUrl: response.init_point,
