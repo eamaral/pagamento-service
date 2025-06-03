@@ -1,11 +1,10 @@
-// src/infrastructure/services/qrCodeService.js
 const mercadopago = require('mercadopago');
 
 const mp = new mercadopago.MercadoPagoConfig({
   accessToken: process.env.MERCADOPAGO_ACCESS_TOKEN
 });
 
-const preferenceClient = new mercadopago.Preference(mp); // 👈 instância da nova classe Preference
+const preferenceClient = new mercadopago.Preference(mp);
 
 async function gerarQrCode(pedido) {
   try {
@@ -17,15 +16,17 @@ async function gerarQrCode(pedido) {
         unit_price: pedido.total
       }],
       back_urls: {
-        success: process.env.MERCADOPAGO_SUCCESS_URL || 'http://localhost:5001/success',
-        failure: process.env.MERCADOPAGO_FAILURE_URL || 'http://localhost:5001/failure',
-        pending: process.env.MERCADOPAGO_PENDING_URL || 'http://localhost:5001/pending'
+        success: process.env.MERCADOPAGO_SUCCESS_URL,
+        failure: process.env.MERCADOPAGO_FAILURE_URL,
+        pending: process.env.MERCADOPAGO_PENDING_URL
       },
       auto_return: 'approved',
       notification_url: process.env.MERCADOPAGO_NOTIFICATION_URL
     };
 
-    const response = await preferenceClient.create({ body: preference }); // ✅
+    console.log('[DEBUG] Preference enviada para Mercado Pago:', JSON.stringify(preference, null, 2));
+
+    const response = await preferenceClient.create({ body: preference });
 
     return {
       qrCodeUrl: response.init_point,
