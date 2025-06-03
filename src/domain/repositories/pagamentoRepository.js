@@ -9,7 +9,7 @@ const client = new AWS.DynamoDB.DocumentClient(options);
 
 class PagamentoRepository {
   constructor() {
-    this.table = process.env.DYNAMODB_TABLE_NAME;
+    this.table = process.env.DYNAMO_TABLE_NAME;
   }
 
   async create({ pedidoId, qrCode, status }) {
