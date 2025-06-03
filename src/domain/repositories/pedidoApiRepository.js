@@ -1,9 +1,9 @@
-// src/domain/repositories/pedidoApiRepository.js
 const axios = require('axios');
 
 class PedidoApiRepository {
   constructor() {
-    this.baseUrl = process.env.PEDIDO_SERVICE_URL;
+    const base = process.env.API_BASE_URL;
+    this.baseUrl = `${base}/api/pedidos`;
     this.authHeader = null;
   }
 
@@ -14,7 +14,7 @@ class PedidoApiRepository {
   async findById(pedidoId) {
     try {
       const resp = await axios.get(
-        `${this.baseUrl}/pedidos/${pedidoId}`,
+        `${this.baseUrl}/${pedidoId}`,
         { headers: { Authorization: this.authHeader } }
       );
       return resp.data;
@@ -29,7 +29,7 @@ class PedidoApiRepository {
   async atualizarStatus(pedidoId) {
     try {
       const resp = await axios.post(
-        `${this.baseUrl}/pedidos/preparacao`,
+        `${this.baseUrl}/preparacao`,
         { pedidoId },
         { headers: { Authorization: this.authHeader } }
       );
