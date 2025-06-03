@@ -7,7 +7,7 @@ router.use(verifyToken);
 
 /**
  * @swagger
- * /api/pagamento/gerar:
+ * /pagamento/gerar:
  *   post:
  *     summary: Gera um QR Code para pagamento via Mercado Pago.
  *     tags:
@@ -43,7 +43,7 @@ router.post('/gerar', pagamentoController.gerarPagamento);
 
 /**
  * @swagger
- * /api/pagamento/fake-checkout:
+ * /pagamento/fake-checkout:
  *   post:
  *     summary: Simula um checkout para pagamento de um pedido.
  *     tags:
