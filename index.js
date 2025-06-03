@@ -7,6 +7,7 @@ const swaggerUi = require('swagger-ui-express');
 const app = express();
 app.use(bodyParser.json());
 
+// Swagger config
 const swaggerOptions = {
   swaggerDefinition: {
     openapi: '3.0.0',
@@ -16,7 +17,10 @@ const swaggerOptions = {
       description: 'QR Code & Fake-Checkout via Mercado Pago',
     },
     servers: [
-      { url: process.env.API_BASE_URL || 'http://localhost:5001', description: 'API Swagger' }
+      {
+        url: 'http://ms-shared-alb-1023094345.us-east-1.elb.amazonaws.com/api',
+        description: 'API Swagger'
+      }
     ],
     components: {
       securitySchemes: {
@@ -32,21 +36,19 @@ const swaggerOptions = {
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-app.use('/pagamento-docs', swaggerUi.serve);
-app.get('/pagamento-docs', (_req, res) => res.redirect('/pagamento-docs/'));
-app.get('/pagamento-docs/', swaggerUi.setup(swaggerSpec));
+app.use('/pagamento-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// ─── Rotas públicas ───────────────────────────────────────────────
+// Rotas públicas (sem token)
 app.use('/api/auth', require('./src/interfaces/http/routes/authRoutes'));
 
-// ─── Rotas protegidas ─────────────────────────────────────────────
+// Rotas privadas
 const verifyToken = require('./src/interfaces/http/middlewares/verifyToken');
-app.use('/api/pagamentos', verifyToken, require('./src/interfaces/http/routes/pagamentoRoutes'));
+app.use('/api/pagamento', verifyToken, require('./src/interfaces/http/routes/pagamentoRoutes'));
 
-// ─── Healthcheck ──────────────────────────────────────────────────
-app.get('/health', (_req, res) => res.sendStatus(200));
+// Healthcheck
+app.get('/health', (_req, res) => res.status(200).send('OK'));
 
-// ─── Log das rotas ────────────────────────────────────────────────
+// Logs das rotas
 console.log('🧩 Rotas registradas:');
 app._router.stack.forEach((middleware) => {
   if (middleware.route) {
@@ -60,7 +62,6 @@ app._router.stack.forEach((middleware) => {
   }
 });
 
-// ─── Start ────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`✅ Pagamento Service rodando na porta ${PORT}`);
