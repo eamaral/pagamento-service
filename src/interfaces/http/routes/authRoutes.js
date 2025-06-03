@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router  = express.Router();
 const {
   login,
   register,
@@ -16,8 +16,8 @@ const {
 
 /**
  * @swagger
- * /api/auth/login:
- *   post:
+ * /auth/login:
+  *   post:
  *     summary: Login com Cognito
  *     tags: [Auth]
  *     requestBody:
@@ -43,7 +43,7 @@ router.post('/login', login);
 
 /**
  * @swagger
- * /api/auth/register:
+ * /auth/register:
  *   post:
  *     summary: Cadastro de usuário no Cognito
  *     tags: [Auth]
@@ -70,7 +70,7 @@ router.post('/register', register);
 
 /**
  * @swagger
- * /api/auth/confirmar-senha:
+ * /auth/confirmar-senha:
  *   post:
  *     summary: Confirma a troca da senha temporária do Cognito
  *     tags: [Auth]
