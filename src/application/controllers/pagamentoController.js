@@ -1,6 +1,10 @@
-// src/application/controllers/pagamentoController.js
 const GerarPagamentoUseCase = require('../usecases/gerarPagamento');
 const PedidoApiRepository   = require('../../domain/repositories/pedidoApiRepository');
+
+exports.receberNotificacao = async (req, res) => {
+  console.log('Notificação recebida do Mercado Pago:', JSON.stringify(req.body, null, 2));
+  return res.status(200).send('OK');
+};
 
 exports.gerarPagamento = async (req, res) => {
   const { pedidoId } = req.body;

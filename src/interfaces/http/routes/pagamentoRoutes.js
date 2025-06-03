@@ -3,6 +3,21 @@ const router = express.Router();
 const verifyToken = require('../middlewares/verifyToken');
 const pagamentoController = require('../../../application/controllers/pagamentoController');
 
+//Rota pública para webhook do Mercado Pago
+/**
+ * @swagger
+ * /pagamento/notificar:
+ *   post:
+ *     summary: Webhook do Mercado Pago (notificação de pagamento)
+ *     tags:
+ *       - Pagamento
+ *     responses:
+ *       '200':
+ *         description: Notificação recebida com sucesso.
+ */
+router.post('/notificar', pagamentoController.receberNotificacao);
+
+//Middleware aplicado somente a rotas privadas
 router.use(verifyToken);
 
 /**
@@ -10,8 +25,7 @@ router.use(verifyToken);
  * /pagamento/gerar:
  *   post:
  *     summary: Gera um QR Code para pagamento via Mercado Pago.
- *     tags:
- *       - Pagamento
+ *     tags: [Pagamento]
  *     requestBody:
  *       required: true
  *       content:
@@ -25,15 +39,8 @@ router.use(verifyToken);
  *     responses:
  *       '201':
  *         description: QR Code gerado com sucesso.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 qrCode:
- *                   type: string
  *       '400':
- *         description: pedidoId inválido ou outra falha.
+ *         description: pedidoId inválido ou falha.
  *       '404':
  *         description: Pedido não encontrado.
  *       '500':
@@ -46,8 +53,7 @@ router.post('/gerar', pagamentoController.gerarPagamento);
  * /pagamento/fake-checkout:
  *   post:
  *     summary: Simula um checkout para pagamento de um pedido.
- *     tags:
- *       - Pagamento
+ *     tags: [Pagamento]
  *     requestBody:
  *       required: true
  *       content:
@@ -60,18 +66,7 @@ router.post('/gerar', pagamentoController.gerarPagamento);
  *                 example: "1"
  *     responses:
  *       '200':
- *         description: Pedido marcado como pago e em preparação.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                 pedidoId:
- *                   type: string
- *                 status:
- *                   type: string
+ *         description: Pedido marcado como pago.
  *       '404':
  *         description: Pedido não encontrado.
  *       '500':
